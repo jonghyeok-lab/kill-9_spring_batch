@@ -1,1 +1,3 @@
 rootProject.name = 'kill-9'
+
+include 'kill-batch-system'
