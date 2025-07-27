@@ -27,6 +27,9 @@ dependencies {
 
 application {
     // 명령줄에서 배치 Job을 실행시켜서 배치 Job을 터미널에서 실행하게 해준다.
+    // CommandLineJobRunner 는 `jobPath <options> jobIdentifier (jobParameters)*` 형태로 파라미터를 받는다.
+        // jobPath : Job이 포함된 설정 클래스 , JobIdentifier: 실행할 Job이름
+        // ./gradlew run --args="com.system.batch.killbatchsystem.SystemTerminationConfig systemTerminationSimulationJob"
     mainClass = 'org.springframework.batch.core.launch.support.CommandLineJobRunner'
 }
 
