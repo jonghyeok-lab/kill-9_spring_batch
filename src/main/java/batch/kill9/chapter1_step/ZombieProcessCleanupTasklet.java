@@ -13,11 +13,6 @@ public class ZombieProcessCleanupTasklet implements Tasklet {
 
     /**
      * Tasklet의 execute() 호출마다 트랜잭션을 시작하고, RepeatStatus가 반환되면 트랜잭션을 커밋한다.
-     * @param contribution mutable state to be passed back to update the current step
-     * execution
-     * @param chunkContext attributes shared between invocations but not between restarts
-     * @return
-     * @throws Exception
      */
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
