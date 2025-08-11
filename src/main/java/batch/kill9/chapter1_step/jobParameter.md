@@ -46,3 +46,17 @@ jobPath <options> jobIdentifier (jobParameters)*
 #### DefaultJobParametersConverter (parameterType의 변환기)
 - parameterType 에 올 수 있는 타입은 DefaultJobParametersConverter 가 Spring의 DefaultConversionService를 사용한다.
   - 그래서, DefaultConversionService 가 제공하는 다양한 타입의 변환을 지원
+
+- LocalDate/Time 은 ISO 기준으로 하면 된다. Enum도 OK
+- netsted class 는 TerminatorConfig$QuestDifficulty 처럼 `$`로 구분
+- POJO도 된다. -> ./gradlew 명령어는 POJO의 필드를 넣는다.
+- `,` 를 넣어야 할 경우, JSON으로 표기
+  - `./gradlew bootRun --args='spring.batch.job.name=terminatorJob infilter={}'`
+
+#### JobLauncherApplicationRunner
+- Spring Boot가 제공하는 ApplicationRunner로 커맨드라인으로 전달된 잡 파라미터를 해석하고, 실제 Job을 실행한다.
+
+#### JobExecution
+- Batch의 Job 실행 정보를 갖고 있는 객체
+  - Job 실행 시점에 생성되어 실행 상태, JobParameters, 실행 결과를 포함. 
+- **JobParameters 에 접근 가능**하다. 

@@ -1,6 +1,8 @@
 package batch.kill9.chapter1_step;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.repository.JobRepository;
@@ -58,6 +60,10 @@ public class DeleteOldFilesTasklet implements Tasklet {
 
         @Bean
         public Step deleteOldRecordStep(JdbcTemplate jdbcTemplate, DataSourceTransactionManager transactionManager, JobRepository jobRepository) {
+            JobParameters jobParameters = new JobParametersBuilder()
+                    .addJobParameter("inputFilePath", "/data/input/users.csv", String.class)
+                    .toJobParameters();
+
             return new StepBuilder("deleteOldRecordStep", jobRepository)
                     .tasklet(((contribution, chunkContext) -> {
                         int deleted = jdbcTemplate.update("DELETE FROM logs WHERE created < NOW() - INTERVAL 7 DAY");

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -20,6 +21,10 @@ public class SystemTerminatorConfig {
     @Bean
     public Job processTerminatorJob(JobRepository jobRepository, Step terminatorStep) {
         return new JobBuilder("processTerminatorJob", jobRepository)
+                .validator(new DefaultJobParametersValidator(
+                        new String[]{"destructionPower"}, // 필수 파라미터
+                        new String[]{}                    // 선택 파라미터 (빈 배열 -> 모든 파라미터 허용)
+                ))
                 .start(terminatorStep)
                 .build();
     }
