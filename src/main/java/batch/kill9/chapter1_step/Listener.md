@@ -1,5 +1,32 @@
 # Spring Batch Listener
 
+### 성능과 모범 사례
+1. 적절한 리스터 선택하기
+- JobExecutionListener: 전체 작전의 시작과 종료를 통제
+- StepExecutionListener: 각 작전 단계의 실행을 감시
+- ChunkListener: 시스템을 청크단위로 제거할 때, 반복의 시작과 종료 시점을 통제
+- Item[Read|Process|Write]Listener: 개별 아이템 식별 통제
+
+2. 예외 처리
+- listener의 before 에서 예외가 발생하면 Job/Step 이 실패한 것으로 간주된다. -> 예외처리 적절히
+
+3. 실행 빈도 고려하기
+- Job/StepExecutionListener
+  - Job/Step 실행 당 한 번씩 실행되므로 비교적 안전하다
+- ItemRead/ProcessListener
+  - 매 아이템마다 실행되므로 조심해야 한다.
+```angular2html
+@Override
+public void afterRead(Object item) {
+    heavyOperation(); // 외부 API 호출 등
+}
+```
+
+4. 리소스 사용을 최소화: 항상 실행 빈도와 리소스 사용을 고려하여 신중하게 사용하기.
+- DB 연결, 파일I/O, 외부 API 호출은 최소화
+- 리스너 내 로직은 가능한 가볍게
+  - 특히 Item 단위 리스너는 더욱 중요
+
 ### JobExecutionListener
 - Job 실행 시작과 종료에 호출
 - `afterJob()`은 잡 실행 정보가 메타데이터 저장소에 저장되기 전 호출.

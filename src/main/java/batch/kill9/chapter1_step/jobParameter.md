@@ -60,3 +60,12 @@ jobPath <options> jobIdentifier (jobParameters)*
 - Batch의 Job 실행 정보를 갖고 있는 객체
   - Job 실행 시점에 생성되어 실행 상태, JobParameters, 실행 결과를 포함. 
 - **JobParameters 에 접근 가능**하다. 
+- JobParameters는 Batch의 철학인 재현 가능성과 일관성에 의해 불변이다.
+  - 그래서, Job 실행 중에 동적으로 생성되거나 변경은 `ExecutionContext` 를 통해 관리하자.
+- 단, JobParameters를 사용할 수 있다면 JobParameters 로 사용하자. 훨씬 유연하고 안전하다.
+  - JobExecutionListener와 ExecutionContext는 외부에서 값을 못받을 때 사용하자.
+
+#### ExecutionContextPromotionListener
+- Step간의 ExecutionContext의 데이터를 Job 수준 ExecutionContext 로 등록시키는 StepExecutionListener 구현체
+- StepExecutionListener 의 afterStep() 메서드를 오버라이드 하여 데이터를 승격(Promote) 한다.
+
