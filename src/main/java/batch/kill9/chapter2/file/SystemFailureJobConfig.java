@@ -12,6 +12,7 @@ import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorSupport;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -48,6 +55,7 @@ public class SystemFailureJobConfig {
                 .build();
     }
 
+    /** 구분자 파일 읽기 */
     @Bean
     @StepScope
     public FlatFileItemReader<SystemFailure> systemFailureItemReader(
@@ -69,6 +77,44 @@ public class SystemFailureJobConfig {
 //                .strict(true) // 기본값은 true이며, 파일 누락 시 예외를 발생시켜 배치를 중단, false면 존재하지 않아도 경고만 남기고 진행.
 //                .beanMapperStrict(true) // 기본값 true, FieldSet에 매핑 대상 객체에 존재하지 않는 필드 있을 경우 예외 발생.
                 .build();
+    }
+
+    /** 고정 길이 **/
+    @Bean
+    @StepScope
+    public FlatFileItemReader<SystemFailure> systemFailureFixedLengthItemReader(
+            @Value("#{jobParameters['inputFile']}") String inputFile
+    ) {
+        return new FlatFileItemReaderBuilder<SystemFailure>()
+                .name("systemFailureFixedLengthItemReader")
+                .resource(new FileSystemResource(inputFile))
+                .fixedLength()
+                .columns(new Range[]{
+                        new Range(1, 8),
+                        new Range(9, 29),
+                        new Range(30, 39),
+                        new Range(40, 45),
+                        new Range(46, 66),
+                })
+                .names("errorId",
+                        "errorDateTime",
+                        "severity",
+                        "processId",
+                        "errorMessage")
+                .targetType(SystemFailure.class)
+                .customEditors(Map.of(LocalDateTime.class, dateTimeEditor()))
+                .build();
+    }
+
+    private PropertyEditor dateTimeEditor() {
+        return new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime parse1 = LocalDateTime.parse(text, formatter);
+                setValue(parse1);
+            }
+        };
     }
 
     @Bean

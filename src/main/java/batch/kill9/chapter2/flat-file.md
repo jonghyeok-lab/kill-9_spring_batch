@@ -18,10 +18,17 @@
 - 토큰화 결과인 FieldSet의 프로퍼티 2가지
   - String[] tokens: 토큰화된 데이터 배열
   - List<String> names: 각 토큰이 매핑될 객체의 프로퍼티 이름 목록
+- RegexLineTokenizer
 
 #### 객체 매핑
 - FieldSet을 객체로 매핑하는 FieldSetMapper
   - BeanWrapperFieldSetMapper(기본값): 객체의 setter 필수
+  - custom한 FieldSetMapper 사용할 경우 `targetType()` 사용 X
+---
+
+### PatternMatchingCompositeLineMapper
+- Ant 스타일의 패턴 매칭을 지원해, 각 라인의 패턴("ERROR*", "ABORT*" ...) 에 따라 서로 다른 
+LineTokenizer 와 FieldSetMapper 를 적용할 수 있다.
 
 
 # FlatFileItemWriter
