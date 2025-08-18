@@ -24,11 +24,15 @@
 - FieldSet을 객체로 매핑하는 FieldSetMapper
   - BeanWrapperFieldSetMapper(기본값): 객체의 setter 필수
   - custom한 FieldSetMapper 사용할 경우 `targetType()` 사용 X
+  - `targetType()` 에 record 전달 시, RecordFieldSetMapper 가 사용됨
 ---
 
-### PatternMatchingCompositeLineMapper
+### PatternMatchingCompositeLineMapper: 한 파일의 라인이 각자의 패턴을 가지고 있을 때 사용 
 - Ant 스타일의 패턴 매칭을 지원해, 각 라인의 패턴("ERROR*", "ABORT*" ...) 에 따라 서로 다른 
 LineTokenizer 와 FieldSetMapper 를 적용할 수 있다.
 
+### MultiResourceItemReader: 여러 파일을 순차적으로 읽기
+- 실제 파일을 읽어들일 위임 대상
+- 읽어들일 파일들의 목록
 
 # FlatFileItemWriter

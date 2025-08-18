@@ -11,13 +11,16 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.builder.MultiResourceItemReaderBuilder;
 import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.beans.PropertyEditor;
@@ -45,13 +48,41 @@ public class SystemFailureJobConfig {
 
     @Bean
     public Step systemFailureStep(
-            FlatFileItemReader<SystemFailure> systemFailureItemReader,
+//            FlatFileItemReader<SystemFailure> systemFailureItemReader,
+            MultiResourceItemReader<SystemFailure> multiSystemFailureReader,
             SystemFailureStdoutItemWriter systemFailureStdoutItemWriter
     ) {
         return new StepBuilder("systemFailureStep", jobRepository)
                 .<SystemFailure, SystemFailure>chunk(10, transactionManager)
-                .reader(systemFailureItemReader)
+                .reader(multiSystemFailureReader)
                 .writer(systemFailureStdoutItemWriter)
+                .build();
+    }
+
+    @Bean
+    @StepScope
+    public MultiResourceItemReader<SystemFailure> multiSystemFailureReader(
+            @Value("#{jobParameters['inputFilePath']}") String inputFilePath
+    ) {
+        return new MultiResourceItemReaderBuilder<SystemFailure>()
+                .name("multiSystemFailureItemReader")
+                .resources(new Resource[]{ // 알파벳 순서로 읽는다 -> 바꾸고 싶다면 comparator()사용
+                        new FileSystemResource(inputFilePath + "/critical.csv"),
+                        new FileSystemResource(inputFilePath + "/normal.csv")
+                })
+                .delegate(systemFailureFileReader())
+                .build();
+    }
+
+    @Bean
+    public FlatFileItemReader<SystemFailure> systemFailureFileReader() {
+        return new FlatFileItemReaderBuilder<SystemFailure>()
+                .name("systemFailureFileReader")
+                .delimited()
+                .delimiter(",")
+                .names("errorId", "errorDateTime", "severity", "processId", "errorMessage")
+                .targetType(SystemFailure.class)
+                .linesToSkip(1)
                 .build();
     }
 
