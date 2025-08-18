@@ -1,6 +1,6 @@
 # FlatFileItemReader
 - 플랫 파일(CSV, TSV)로 부터 데이터를 읽어온다.
-  ![img.png](file/img.png)
+  ![img.png](reader/img.png)
 
 ### FlatFileItemReader의 내부
 1. 파일에서 한 줄을 읽는다.
@@ -36,3 +36,19 @@ LineTokenizer 와 FieldSetMapper 를 적용할 수 있다.
 - 읽어들일 파일들의 목록
 
 # FlatFileItemWriter
+- `필드 추출`과 `문자열 결합` 으로 도메인 객체를 파일에 기록한다.
+  - FieldExtractor: 필드 추출
+  - LineAggregator: 추출한 필드 값들을 문자열로 결합
+
+### FieldExtractor
+- sourceType 에 따라 아래 2가지 중 자동으로 선택
+  - BeanWrapperFieldExtractor: Java Bean 객체로부터 필드를 추출, getter 기반
+  - RecordFieldExtractor: Java Record 객체에서 필드 추출, 레코드 컴포넌트의 accessor 메서드 호출
+
+### LineAggregator
+- DelimitedLineAggregator: 구분자 기반 형식으로 파일 쓸 때
+- FormatterLineAggregator: 고정 길이 형식 포함한 다른 형식으로 파일 쓸 때
+![img.png](writer/img.png)
+
+### custome FieldExtractor
+- sourceType 과 names()는 무시된다.

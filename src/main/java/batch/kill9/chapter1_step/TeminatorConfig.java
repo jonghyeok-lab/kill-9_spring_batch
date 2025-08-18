@@ -113,8 +113,8 @@ public class TeminatorConfig {
 //        });
 //    }
 
-    @Bean
-    public JobParametersConverter jobParameterConverter() {
-        return new JsonJobParametersConverter();
-    }
+//    @Bean
+//    public JobParametersConverter jobParameterConverter() {
+//        return new JsonJobParametersConverter();
+//    }
 }

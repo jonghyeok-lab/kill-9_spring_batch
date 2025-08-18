@@ -1,4 +1,4 @@
-package batch.kill9.chapter2.file;
+package batch.kill9.chapter2_file.reader;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +27,7 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @Slf4j
 @Configuration

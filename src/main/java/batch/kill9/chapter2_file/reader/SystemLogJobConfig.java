@@ -1,6 +1,5 @@
-package batch.kill9.chapter2.file;
+package batch.kill9.chapter2_file.reader;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;

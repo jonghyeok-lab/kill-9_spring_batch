@@ -1,4 +1,4 @@
-package batch.kill9.chapter2.file;
+package batch.kill9.chapter2_file.reader;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.file.FlatFileItemReader;
