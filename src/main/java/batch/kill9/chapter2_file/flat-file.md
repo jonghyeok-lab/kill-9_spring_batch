@@ -40,6 +40,7 @@ LineTokenizer 와 FieldSetMapper 를 적용할 수 있다.
   - FieldExtractor: 필드 추출
   - LineAggregator: 추출한 필드 값들을 문자열로 결합
 
+## 내부 동작
 ### FieldExtractor
 - sourceType 에 따라 아래 2가지 중 자동으로 선택
   - BeanWrapperFieldExtractor: Java Bean 객체로부터 필드를 추출, getter 기반
@@ -52,3 +53,24 @@ LineTokenizer 와 FieldSetMapper 를 적용할 수 있다.
 
 ### custome FieldExtractor
 - sourceType 과 names()는 무시된다.
+
+## 존재하는 파일 처리 옵션
+- shouldDeleteIfExists: 기존 파일의 삭제 여부(기본값: true)
+- append: 기존 파일에 데이터 덧붙이기 여부(기본값: false, 값을 true로 설정할 경우, shouldDeleteIfExists는 자동으로 false 로 설정)
+- shouldDeleteIfEmpty: 빈 결과 파일 처리 여부(기본값 false)
+  - 단, 빈 파일 여부는 현재 스텝에서 FlatFileItemWriter 가 실제로 쓴 라인 수를 기준.
+    - 만약, append가 true 고 shouldDeleteIfEmpty 도 true 일 때, 현재 스텝에서 아무 데이터도 쓰지 않으면 파일이 삭제되니 주의
+
+## 롤백 전략
+- 청크 처리가 완료되어 트랜잭션이 커밋되려고 할 때, 즉 `beforeCommit()` 콜백이 호출될 때, 버퍼 데이터를 파일에 쓴다.
+- trasactional() 메소드로 설정가능하며, 기본값 true
+![img.png](writer/img1.png)
+
+
+## OS 레벨의 파일 처리
+- forceSync(true): OS가 캐시가 아닌 디스크에 즉시 동기화되어 OS 중단이나 파일 시스템 발생해도 데이터 손실 위험이 줄어든다.
+  - 기본값은 false 이다.
+
+## 대용량 파일의 분할 처리: MultiResourceItemWriter
+- 여러 개의 리소스(파일)에 데이터를 분배하는 ItemWriter 구현체
+- 
