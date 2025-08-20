@@ -10,7 +10,7 @@
 
 ### 주의사항
 - 프록시 객체를 만들어야 하니 상속 가능해야 함.
-- Step 빈 에는 Step/JobScope X
+- Step 빈 에는 Step/JobScope X -> Job 실행 전에 Bean 생성이 지연되어 Job 구성이 불완전해짐
 
 ### 지연 바인딩
 - `systemDestruction` 이란 Step 이 JobParameter 로 파라미터를 하나 받아야 하지만 Step 빈에는 Job/StepScope를 사용하지 않아 컴파일 에러가 발생한다.
